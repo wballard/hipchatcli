@@ -54,19 +54,20 @@ def handle_error(response):
 
 def users(arguments):
 
-    def show(arguments):
+    def show(arguments, silent=False):
         r = requests.get('https://api.hipchat.com/v1/users/show?format=json&auth_token={0}&user_id={1}'.
                 format(os.getenv('HIPCHAT_API_KEY', ''), arguments['USER']))
         r = handle_error(r)
-        if arguments['--id-only']:
-            puts(str(r['user']['user_id']))
-        else:
-            puts(columns(
-                [str(r['user']['user_id']), 10],
-                [str(r['user']['name']), 25],
-                [str(r['user']['email']), 25],
-                [str(r['user']['title']), 10],
-                ))
+        if not silent:
+            if arguments['--id-only']:
+                puts(str(r['user']['user_id']))
+            else:
+                puts(columns(
+                    [str(r['user']['user_id']), 10],
+                    [str(r['user']['name']), 25],
+                    [str(r['user']['email']), 25],
+                    [str(r['user']['title']), 10],
+                    ))
         return r['user']
 
     return forward(locals(), arguments)
@@ -98,7 +99,7 @@ def rooms(arguments):
 
     def create(arguments):
         #chain along to get the owner
-        user = users(arguments)['show'](arguments)
+        user = users(arguments)['show'](arguments, silent=True)
         r = requests.post(
             'https://api.hipchat.com/v1/rooms/create?format=json&auth_token={0}'.format(os.getenv('HIPCHAT_API_KEY', '')),
             data={'owner_user_id': user['user_id'], 'name': arguments['NAME']}
