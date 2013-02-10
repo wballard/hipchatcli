@@ -1,0 +1,4 @@
+Hipchat_CLI.egg-info
+dist
+build
+*.pyc
