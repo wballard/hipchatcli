@@ -12,6 +12,5 @@ test: install
 	hipchat rooms list
 	hipchat rooms list Test2
 	echo 'hi there' | hipchat rooms message HipchatCLITest $(USERNAME)
-	exit 1
 	hipchat -i rooms list HipchatCLI | xargs -I _ hipchat rooms delete _
 	hipchat rooms list
